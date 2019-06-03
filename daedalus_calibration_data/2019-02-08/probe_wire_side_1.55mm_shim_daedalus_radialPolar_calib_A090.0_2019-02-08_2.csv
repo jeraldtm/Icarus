@@ -1,0 +1,12 @@
+#Procedure: <__main__.daedalusRadialPoloarCalibrationProcedure>
+#Parameters:
+#	Calibration Name: probe_wire_side_1.55mm_shim
+#	Center Calibration File: ./proj_field_center_calib.csv
+#	Azimuthal Angle: 90 deg
+#	Magnet Voltage: -7 V
+#	Queued Time: 2019-02-08 11:31:00
+#	Start Y position: -11.99 mm
+#	Y position step: 0.01 mm
+#	Stop Y position: 11.99 mm
+#Data:
+R,Xfield,Yfield,Zfield,elapsed_time

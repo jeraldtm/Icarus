@@ -1,0 +1,11 @@
+#Procedure: <__main__.daedalusCenterCalibrationProcedure>
+#Parameters:
+#	stage X guess: 12.25 mm
+#	stage Y guess: 14.1 mm
+#	Calibration Name: probe_wire_side_1.55mm_shim
+#	Volts to magnet: 6 V
+#	Queued Time: 2019-02-04 17:35:51
+#	Scaling from Z field difference to mm: 0.15 mm/T
+#	Field Tolerance: 0.005 T
+#Data:
+X,Y,Xfield,Yfield,Zfield,elapsed_time

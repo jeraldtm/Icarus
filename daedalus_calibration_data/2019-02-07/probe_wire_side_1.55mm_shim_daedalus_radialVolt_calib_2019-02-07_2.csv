@@ -1,0 +1,11 @@
+#Procedure: <__main__.daedalusRadialVoltCalibrationProcedure>
+#Parameters:
+#	Calibration Name: probe_wire_side_1.55mm_shim
+#	Center Calibration File: ./proj_field_center_calib.csv
+#	Queued Time: 2019-02-07 09:33:57
+#	Radial Distance: 10 mm
+#	Start magnet voltage: -10 V
+#	Magnet voltage step: 0.1 V
+#	Stop magnet voltage: 10 V
+#Data:
+V,Xfield,Yfield,Zfield,elapsed_time
