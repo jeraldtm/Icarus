@@ -1,0 +1,12 @@
+#Procedure: <__main__.daedalusRadialPoloarCalibrationProcedure>
+#Parameters:
+#	Calibration Name: shims_nv
+#	Center Calibration File: ./proj_field_center_calib_icarus.csv
+#	Azimuthal Angle: 0 deg
+#	Magnet Voltage: -2 V
+#	Queued Time: 2019-06-05 13:03:26
+#	Start Y position: -15 mm
+#	Y position step: 0.01 mm
+#	Stop Y position: 15 mm
+#Data:
+R,Xfield,Yfield,Zfield,elapsed_time
