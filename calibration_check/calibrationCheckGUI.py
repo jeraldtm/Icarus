@@ -28,7 +28,8 @@ class icarusCalibCheckProcedure(Procedure):
     mag_field = FloatParameter("Magnetic field strength", units="T", default=0.1)
     num_averages = IntegerParameter("Number of Averages", default=1)
     delay = FloatParameter("Delay between averages", units="s", default=.1)
-    center_calib_name = Parameter("Center Calibration File")
+
+    mag_calib_name = Parameter("Magnet Calibration Filename", default='./calibrations/icarus')
 
     phi_start = FloatParameter("Phi Start Position", units="mm", default=10.)
     phi_end = FloatParameter("Phi End Position", units="mm", default=13.)
@@ -37,16 +38,19 @@ class icarusCalibCheckProcedure(Procedure):
     theta_end = FloatParameter("Theta End Position", units="mm", default=13.)
     theta_step = FloatParameter("Theta Scan Step Size", units="mm", default=0.1)
 
-    DATA_COLUMNS = ["phi","theta","X", "Y", "Xfield_avg","Yfield_avg","Zfield_avg","Xfield_std",
-                    "Yfield_std","Zfield_std"]
+    DATA_COLUMNS = ["phi","theta","X", "Y", "act_phi", "act_theta", "Xfield_avg","Yfield_avg","Zfield_avg","Xfield_std",
+                    "Yfield_std","Zfield_std", "Bmag", "V", "act_V"  ]
 
     def startup(self):
         log.info("Connecting and configuring the instruments")
         self.hall_probe = senis3AxHallProbe(DAQmxAdapter('Dev2', ['ai0','ai2','ai4']))
         self.magnet = daedalusProjField(DAQmxAdapter('Dev2', ['ao0', 'ai1']),"GPIB::10")
-        
+        for err in self.magnet.errors:
+        	log.warning('%s' % err)
+        self.magnet.load_calibration_params(self.mag_calib_name)
+
         log.info("Setting magnet field to %.2f T"%self.mag_field)
-        log.info("Setting magnet position to Phi: {0}, Theta: {1}".format(phi_start, theta_start))
+        log.info("Setting magnet position to Phi: {0}, Theta: {1}".format(self.phi_start, self.theta_start))
         self.magnet.set_vector_field(self.mag_field, self.phi_start, self.theta_start)
         while self.magnet.in_motion:
             sleep(0.05)
@@ -68,7 +72,7 @@ class icarusCalibCheckProcedure(Procedure):
         for theta in thetas:
             for phi in phis:
                 log.info("moving magnet to Phi: %g deg, Theta: %g deg"%(phi, theta))
-                self.magnet.set_vector_field()
+                self.magnet.set_vector_field(self.mag_field, phi, theta)
                 # wait for all motion to finish
                 while self.magnet.in_motion:
                     sleep(0.05)
@@ -78,6 +82,7 @@ class icarusCalibCheckProcedure(Procedure):
 
                 x = self.magnet.motion_inst.x.position
                 y = self.magnet.motion_inst.y.position
+                v = self.magnet.getVolts()
 
                 xfields = np.array([])
                 yfields = np.array([])
@@ -95,12 +100,17 @@ class icarusCalibCheckProcedure(Procedure):
                 "theta": theta,
                 "X":x,
                 "Y":y,
+                "act_phi": np.arctan(np.mean(xfields)/np.mean(yfields))*180/np.pi,
+                "act_theta": np.arctan(np.mean(zfields)/np.sqrt(np.mean(yfields)**2 + np.mean(xfields)**2))*180/np.pi,
                 "Xfield_avg": np.mean(xfields),
                 "Xfield_std": np.std(xfields),
                 "Yfield_avg": np.mean(yfields),
                 "Yfield_std": np.std(yfields),
                 "Zfield_avg": np.mean(zfields),
-                "Zfield_std": np.std(zfields)
+                "Zfield_std": np.std(zfields),
+                "Bmag": np.sqrt(np.mean(xfields)**2 + np.mean(yfields)**2 + np.mean(zfields)**2),
+                "V" : self.magnet.volts,  
+                "act_V" : v
                 })
                 if self.should_stop():
                     log.warning("Caught stop flag in procedure")
@@ -139,13 +149,13 @@ class icarusCalibCheckGUI(ManagedImageWindow):
             super()._setup_ui()
             self.inputs.hide()
             self.run_directory = os.path.dirname(os.path.realpath(__file__))
-            self.inputs = fromUi(os.path.join(self.run_directory,'calibrationCheck_gui.ui'))
+            self.inputs = fromUi(os.path.join(self.run_directory,'custom_inputs/calibrationCheck_gui.ui'))
 
         def make_procedure(self):
             procedure = icarusCalibCheckProcedure()
 
             procedure.name = self.inputs.name.text()
-
+            procedure.mag_calib_name = os.path.join(self.run_directory,'calibrations/icarus')
             procedure.mag_field = self.inputs.mag_field.value()
             procedure.num_averages = self.inputs.num_averages.value()
             procedure.delay = self.inputs.delay.value()
