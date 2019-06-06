@@ -91,8 +91,8 @@ class icarusCalibCheckProcedure(Procedure):
                     yfields = np.append(yfields,self.hall_probe.y_field)
                     zfields = np.append(zfields,self.get_Bz())
                 self.emit("results", {
-                "Phi": phi,
-                "Theta": theta,
+                "phi": phi,
+                "theta": theta,
                 "X":x,
                 "Y":y,
                 "Xfield_avg": np.mean(xfields),
@@ -126,8 +126,8 @@ class icarusCalibCheckGUI(ManagedImageWindow):
                     'theta_start',
                     'theta_end'
                     ],
-                x_axis='Phi',
-                y_axis='Theta',
+                x_axis='phi',
+                y_axis='theta',
                 z_axis='Xfield_avg'
             )
             self.setWindowTitle('Icarus Calib Check GUI')
@@ -149,7 +149,6 @@ class icarusCalibCheckGUI(ManagedImageWindow):
             procedure.mag_field = self.inputs.mag_field.value()
             procedure.num_averages = self.inputs.num_averages.value()
             procedure.delay = self.inputs.delay.value()
-            procedure.phi = self.inputs.phi.value()
 
             procedure.phi_start = self.inputs.phi_start.value()
             procedure.phi_end = self.inputs.phi_end.value()

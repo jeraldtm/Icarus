@@ -19,7 +19,7 @@
      <item row="1" column="0" colspan="2">
       <widget class="QLineEdit" name="save_dir">
        <property name="text">
-        <string>C:\Users\TopMob\Document\icarus_calib</string>
+        <string>C:\Users\TopMob\Junk</string>
        </property>
        <property name="placeholderText">
         <string>C:\Users\</string>
@@ -170,7 +170,7 @@
       </widget>
      </item>
      <item row="2" column="1">
-      <widget class="QDoubleSpinBox" name="Phi_start">
+      <widget class="QDoubleSpinBox" name="phi_start">
        <property name="suffix">
         <string> deg</string>
        </property>
@@ -209,7 +209,7 @@
       </widget>
      </item>
      <item row="3" column="1">
-      <widget class="QDoubleSpinBox" name="Phi_end">
+      <widget class="QDoubleSpinBox" name="phi_end">
        <property name="suffix">
         <string> deg</string>
        </property>
@@ -226,12 +226,12 @@
         <double>0.010000000000000</double>
        </property>
        <property name="value">
-        <double>0.000000000000000</double>
+        <double>10.000000000000000</double>
        </property>
       </widget>
      </item>
      <item row="3" column="3">
-      <widget class="QDoubleSpinBox" name="Theta_end">
+      <widget class="QDoubleSpinBox" name="theta_end">
        <property name="suffix">
         <string> deg</string>
        </property>
@@ -248,7 +248,7 @@
         <double>0.010000000000000</double>
        </property>
        <property name="value">
-        <double>0.000000000000000</double>
+        <double>10.000000000000000</double>
        </property>
       </widget>
      </item>
@@ -274,7 +274,7 @@
       </widget>
      </item>
      <item row="2" column="3">
-      <widget class="QDoubleSpinBox" name="Theta_start">
+      <widget class="QDoubleSpinBox" name="theta_start">
        <property name="suffix">
         <string> deg</string>
        </property>
@@ -310,7 +310,7 @@
       </widget>
      </item>
      <item row="4" column="1">
-      <widget class="QDoubleSpinBox" name="Phi_step">
+      <widget class="QDoubleSpinBox" name="phi_step">
        <property name="suffix">
         <string> deg</string>
        </property>
@@ -329,7 +329,7 @@
       </widget>
      </item>
      <item row="4" column="3">
-      <widget class="QDoubleSpinBox" name="Theta_step">
+      <widget class="QDoubleSpinBox" name="theta_step">
        <property name="suffix">
         <string> deg</string>
        </property>
