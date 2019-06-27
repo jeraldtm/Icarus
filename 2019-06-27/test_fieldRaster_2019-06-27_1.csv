@@ -1,0 +1,15 @@
+#Procedure: <__main__.daedalusFieldRasterProcedure>
+#Parameters:
+#	stage X End Position: 29 mm
+#	stage X Start Position: 25 mm
+#	stage X Scan Step Size: 0.5 mm
+#	stage Y End Position: 23 mm
+#	stage Y Start Position: 19 mm
+#	stage Y Scan Step Size: 0.5 mm
+#	Delay between averages: 0.1 s
+#	Volts to magnet: 5 V
+#	name: test
+#	Number of Averages: 3
+#	Magnet Phi: 0 deg
+#Data:
+X,Y,Xfield_avg,Yfield_avg,Zfield_avg,Xfield_std,Yfield_std,Zfield_std
