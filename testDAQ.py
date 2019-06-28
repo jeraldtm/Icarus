@@ -8,7 +8,7 @@ daq = DAQmxAdapter('Dev2', ['ao0', 'ai1'])
 write_str = '/' + daq.resource_name + '/' + daq.channels[0]
 read_str = '/' + daq.resource_name + '/' + daq.channels[1]
 
-volts = 5.0
+volts = 0.0
 
 task = daqmx.Task()
 task.CreateAOVoltageChan(write_str.encode(),"",-10.0,10.0,daqmx.DAQmx_Val_Volts,None)
