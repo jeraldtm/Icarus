@@ -73,6 +73,9 @@ class icarusCalibCheckProcedure(Procedure):
         for theta in thetas:
             for phi in phis:
                 log.info("moving magnet to Phi: %g deg, Theta: %g deg"%(phi, theta))
+                if not np.isclose(self.magnet._phi, phi, atol=1e-4):
+                    self.magnet.motion_inst.phi.position = phi # see phi setter function
+                    self.magnet._phi = phi
                 # self.magnet.set_vector_field(self.mag_field, phi, theta)
                 # wait for all motion to finish
                 while self.magnet.in_motion:
