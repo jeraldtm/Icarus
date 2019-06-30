@@ -157,7 +157,7 @@ class icarusCalibCheckGUI(ManagedImageWindow):
             super()._setup_ui()
             self.inputs.hide()
             self.run_directory = os.path.dirname(os.path.realpath(__file__))
-            self.inputs = fromUi(os.path.join(self.run_directory,'calibrationCheck_gui.ui'))
+            self.inputs = fromUi(os.path.join(self.run_directory,'custom_inputs/calibrationCheckFieldSweep_gui.ui'))
 
         def make_procedure(self):
             procedure = icarusCalibCheckProcedure()
