@@ -1,0 +1,12 @@
+#Procedure: <__main__.daedalusRadialPoloarCalibrationProcedure>
+#Parameters:
+#	Calibration Name: 4vp
+#	Center Calibration File: ./icarus_center_calib.csv
+#	Azimuthal Angle: 0.01 deg
+#	Magnet Voltage: 4 V
+#	Queued Time: 2019-06-30 14:50:48
+#	Start Y position: -15 mm
+#	Y position step: 0.01 mm
+#	Stop Y position: 15 mm
+#Data:
+R,Xfield,Yfield,Zfield,theta,phi,elapsed_time
