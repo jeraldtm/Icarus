@@ -1,0 +1,23 @@
+# swept procedure column: field_strength
+# swept series parameter: field
+# swept series parameter: field
+# swept series parameter: field
+# Parameters:
+#
+# Initial Field: 0.05 T
+# Final Field: 0.25 T
+# Field Step: 0.05 T
+# Initial Field: 0.05 T
+# Final Field: 0.25 T
+# Field Step: 0.05 T
+# Initial Field: 0.05 T
+# Final Field: 0.25 T
+# Field Step: 0.05 T
+#
+# Files in Series:
+#
+5V_calibCheck_F0.050_2019-07-01_1.csv
+5V_calibCheck_F0.050_2019-07-01_2.csv
+5V_calibCheck_F0.050_2019-07-01_3.csv
+5V_calibCheck_F0.050_2019-07-01_4.csv
+5V_calibCheck_F0.050_2019-07-01_5.csv
