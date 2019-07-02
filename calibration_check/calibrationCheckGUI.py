@@ -5,54 +5,49 @@ log = logging.getLogger(__name__)
 log.addHandler(logging.NullHandler())
 
 import numpy as np
-import socket
 from pymeasure.experiment import FloatParameter, IntegerParameter, Parameter
 from pymeasure.log import console_log
 from pymeasure.experiment import Procedure
 from pymeasure.adapters import DAQmxAdapter
 from daedalus.custom_instruments import daedalusProjField, senis3AxHallProbe
 
-from pymeasure.display.windows import ManagedWindow
+from pymeasure.display.windows import ManagedImageWindow
 from pymeasure.experiment import Results, unique_filename
 import sys
 from pymeasure.log import console_log
 from pymeasure.display.Qt import QtCore, QtGui, fromUi
-from itertools import product
 
 
-class icarusCalibCheckFieldSweepProcedure(Procedure):
+class icarusCalibCheckProcedure(Procedure):
     """
     Procedure for making a raser image of the field components of Daedalus
     """
 
     # control parameters
-    name = Parameter("Calibration Name", default='')
-    mag_field = FloatParameter("Magnetic field strength", units="T", default=0.05)
+    calib_name = Parameter("Calibration Name", default='')
+    mag_field = FloatParameter("Magnetic field strength", units="T", default=0.1)
     num_averages = IntegerParameter("Number of Averages", default=1)
     delay = FloatParameter("Delay between averages", units="s", default=.1)
+
+    mag_calib_name = Parameter("Magnet Calibration Filename", default='./calibrations/icarus')
+
     phi_start = FloatParameter("Phi Start Position", units="mm", default=10.)
     phi_end = FloatParameter("Phi End Position", units="mm", default=13.)
     phi_step = FloatParameter("Phi Scan Step Size", units="mm", default=0.1)
     theta_start = FloatParameter("Theta Start Position", units="mm", default=10.)
     theta_end = FloatParameter("Theta End Position", units="mm", default=13.)
     theta_step = FloatParameter("Theta Scan Step Size", units="mm", default=0.1)
-    calib_file = Parameter("Magnet Calibration Filename", default='./calibrations')
-    station_name = Parameter("Probe Station Name", default='')
-
-    first = True
-    last = True
 
     DATA_COLUMNS = ["phi","theta","X", "Y", "act_phi", "act_theta", "Xfield_avg","Yfield_avg","Zfield_avg","Xfield_std",
-                    "Yfield_std","Zfield_std", "Bmag", "Bmag_deviation", "Bmag_percent_dev", "V", "act_V"  ]
+                    "Yfield_std","Zfield_std", "Bmag", "V", "act_V"  ]
 
     def startup(self):
-        log.info("Using calibration file: " + self.calib_file + " on station: " + self.station_name)
         log.info("Connecting and configuring the instruments")
         self.hall_probe = senis3AxHallProbe(DAQmxAdapter('Dev2', ['ai0','ai2','ai4']))
         self.magnet = daedalusProjField(DAQmxAdapter('Dev2', ['ao0', 'ai1']),"GPIB::10")
         for err in self.magnet.errors:
         	log.warning('%s' % err)
-        self.magnet.load_calibration_params(self.calib_file)
+        self.magnet.load_calibration_params(self.mag_calib_name)
         self.x_zero, self.y_zero, self.z_zero = 0.0437063, 0.0434812, 0.0437816 #zero point of Hall probe calibrated using LakeShore Gaussmeter
         log.info("Setting magnet field to %.2f T"%self.mag_field)
         log.info("Setting magnet position to Phi: {0}, Theta: {1}".format(self.phi_start, self.theta_start))
@@ -106,9 +101,6 @@ class icarusCalibCheckFieldSweepProcedure(Procedure):
                     xfields = np.append(xfields,self.get_Bx_zeroed())
                     yfields = np.append(yfields,self.get_By_zeroed())
                     zfields = np.append(zfields,self.get_Bz_zeroed())
-                
-                Bmag = np.sqrt(np.mean(xfields)**2 + np.mean(yfields)**2 + np.mean(zfields)**2)
-
                 self.emit("results", {
                 "phi": phi,
                 "theta": theta,
@@ -122,10 +114,8 @@ class icarusCalibCheckFieldSweepProcedure(Procedure):
                 "Yfield_std": np.std(yfields),
                 "Zfield_avg": np.mean(zfields),
                 "Zfield_std": np.std(zfields),
-                "Bmag": Bmag,
-                "Bmag_deviation": Bmag - self.mag_field, 
-                "Bmag_percent_dev": (Bmag - self.mag_field)/Bmag*100,
-                "V" : self.magnet.set_volts,  
+                "Bmag": np.sqrt(np.mean(xfields)**2 + np.mean(yfields)**2 + np.mean(zfields)**2),
+                "V" : self.magnet.setvolts,  
                 "act_V" : v
                 })
                 if self.should_stop():
@@ -138,15 +128,14 @@ class icarusCalibCheckFieldSweepProcedure(Procedure):
 
     def shutdown(self):
         log.info("Done with image scan. Shutting down instruments")
-        self.magnet.voltage = 0.
+        self.magnet.volts = 0.
+        self.magnet.phi = 0.
 
-class icarusCalibCheckFieldSweepGUI(ManagedWindow):
-        SWEEP_PARAM_NAMES = ['field']
-        NUM_SWEEP_PARAMS = len(SWEEP_PARAM_NAMES)
 
+class icarusCalibCheckGUI(ManagedImageWindow):
         def __init__(self):
             super().__init__(
-                procedure_class=icarusCalibCheckFieldSweepProcedure,
+                procedure_class=icarusCalibCheckProcedure,
                 displays=[
                     'mag_field',
                     'num_averages',
@@ -155,15 +144,11 @@ class icarusCalibCheckFieldSweepGUI(ManagedWindow):
                     'theta_start',
                     'theta_end'
                     ],
-                x_axis='theta',
-                y_axis='Bmag_percent_dev'
-                #z_axis='Xfield_avg'
+                x_axis='phi',
+                y_axis='theta',
+                z_axis='Xfield_avg'
             )
-            self.setWindowTitle('Icarus Calib Check FieldSweep GUI')
-
-        def identifySystem(self):
-                hostname = socket.gethostname()
-                return hostname
+            self.setWindowTitle('Icarus Calib Check GUI')
 
         def _setup_ui(self):
             """
@@ -172,18 +157,16 @@ class icarusCalibCheckFieldSweepGUI(ManagedWindow):
             super()._setup_ui()
             self.inputs.hide()
             self.run_directory = os.path.dirname(os.path.realpath(__file__))
-            self.inputs = fromUi(os.path.join(self.run_directory,'custom_inputs/calibrationCheckFieldSweep_gui.ui'))
-            self.inputs.station_name.setText(self.identifySystem())
-            self.inputs.calib_file.setText('./calibrations/' + self.identifySystem().lower())
+            self.inputs = fromUi(os.path.join(self.run_directory,'custom_inputs/calibrationCheck_gui.ui'))
 
         def make_procedure(self):
-            procedure = icarusCalibCheckFieldSweepProcedure()
+            procedure = icarusCalibCheckProcedure()
+
             procedure.name = self.inputs.name.text()
+            procedure.mag_calib_name = os.path.join(self.run_directory,self.inputs.calib_file.text())
             procedure.mag_field = self.inputs.mag_field.value()
             procedure.num_averages = self.inputs.num_averages.value()
             procedure.delay = self.inputs.delay.value()
-            procedure.calib_file = self.inputs.calib_file.text()
-            procedure.station_name = self.identifySystem()
 
             procedure.phi_start = self.inputs.phi_start.value()
             procedure.phi_end = self.inputs.phi_end.value()
@@ -194,51 +177,20 @@ class icarusCalibCheckFieldSweepGUI(ManagedWindow):
 
             return procedure
 
-        def make_procedures(self, fields):
-                """
-                Makes a series of procedures varying fields
-                """
-                procedures = []
-                for field in fields:
-                    procedure = self.make_procedure()
-                    procedure.mag_field = field
-                    procedure.first = False
-                    procedure.last = False
-                    procedures.append(procedure)
-                return procedures
-
         def queue(self):
-                do_sweep = self.inputs.do_sweeps.isChecked()
-                direc = self.inputs.save_dir.text()
-
-                if do_sweep: 
-                    fields = np.arange(self.inputs.mag_field.value(), self.inputs.field_end.value(), self.inputs.field_step.value())
-                    if self.inputs.field_end.value() not in fields: # ensure we capture the endpoint
-                        fields= np.append(fields,self.inputs.field_end.value())
-                    # create list of procedures to run
-                    procedures = self.make_procedures(fields)
-
-                else:
-                    procedures = [self.make_procedure()]
-
-                for procedure in procedures:
-                    # ensure *some* sample name exists so Results.load() works
-
-                    # create files
-                    pre = procedure.name + '_calibCheck_F{field:.3f}_'.format(
-                        field=procedure.mag_field,
-                    )
-                    suf = ''
-                    filename = unique_filename(direc,dated_folder=True,suffix=suf,
-                                               prefix=pre)
-
-                    # Queue experiment
-                    results = Results(procedure,filename)
-                    experiment = self.new_experiment(results)
-                    self.manager.queue(experiment)
+            fname = unique_filename(
+                self.inputs.save_dir.text(),
+                dated_folder=True,
+                prefix=self.inputs.name.text() + '_calibrationCheck_%.2f_' % self.inputs.mag_field.value(),
+                suffix=''
+            )
+            procedure = self.make_procedure()
+            results = Results(procedure, fname)
+            experiment = self.new_experiment(results)
+            self.manager.queue(experiment)
 
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)
-    window = icarusCalibCheckFieldSweepGUI()
+    window = icarusCalibCheckGUI()
     window.show()
     sys.exit(app.exec_())
