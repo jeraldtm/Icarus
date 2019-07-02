@@ -1,0 +1,15 @@
+#Procedure: <__main__.icarusCalibCheckFieldSweepProcedure>
+#Parameters:
+#	Calibration Name: 
+#	Delay between averages: 0.1 s
+#	Magnet Calibration Filename: C:\Users\TopMob\daedalus_control\calibrations/10V/icarus
+#	Magnetic field strength: 0.21 T
+#	Number of Averages: 3
+#	Phi End Position: 0 mm
+#	Phi Start Position: 0 mm
+#	Phi Scan Step Size: 5 mm
+#	Theta End Position: 90 mm
+#	Theta Start Position: -90 mm
+#	Theta Scan Step Size: 5 mm
+#Data:
+phi,theta,X,Y,act_phi,act_theta,Xfield_avg,Yfield_avg,Zfield_avg,Xfield_std,Yfield_std,Zfield_std,Bmag,Bmag_deviation,Bmag_percent_dev,V,act_V
