@@ -1,0 +1,13 @@
+#Procedure: <__main__.daedalusVoltCenterCalibrationProcedure>
+#Parameters:
+#	Calibration Name: alignedLeft
+#	Center Calibration File: ./icarus_center_calib.csv
+#	Magnet Azimuthal Angle: 0 deg
+#	Queued Time: 2019-07-05 22:32:11
+#	Start magnet voltage: 0 V
+#	Magnet voltage step: 0.1 V
+#	Stop magnet voltage: 0 V
+#Data:
+V,Xfield,Yfield,Zfield,elapsed_time
+0.0,5.3239794921881856e-05,0.0004600658691406301,-0.00010416049804688049,0.5150294303894043
+0.0,5.2043505859383776e-05,0.00040456049804687977,-0.00011584262695313319,1.0160582065582275
