@@ -1,0 +1,17 @@
+#Procedure: <__main__.icarusCalibCheckFieldSweepProcedure>
+#Parameters:
+#	Magnet Calibration Filename: ./calibrations/icarus
+#	Delay between averages: 0.1 s
+#	Magnetic field strength: 0.05 T
+#	Calibration Name: test
+#	Number of Averages: 3
+#	Phi End Position: 0 mm
+#	Phi Start Position: 0 mm
+#	Phi Scan Step Size: 5 mm
+#	Probe Station Name: Icarus
+#	Theta End Position: 90 mm
+#	Theta Start Position: -90 mm
+#	Theta Scan Step Size: 5 mm
+#Data:
+phi,theta,X,Y,act_phi,act_theta,Xfield_avg,Yfield_avg,Zfield_avg,Xfield_std,Yfield_std,Zfield_std,Bmag,Bmag_deviation,Bmag_percent_dev,V,act_V
+0.0,-90.0,26.30927,7.26092,47.23755070468735,19.830633455836953,0.023527832893880208,0.02175838740234375,0.011556854313151038,1.4949306430079006e-05,1.0738269206890718e-05,7.271334707360626e-06,0.03406680531908181,-0.015933194680918195,-46.77043982164523,-1.5413152860289316,-1.31866455078125
